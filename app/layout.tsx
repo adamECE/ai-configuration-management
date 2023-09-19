@@ -1,8 +1,13 @@
-import './globals.css'
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+'use client'
 
-const inter = Inter({ subsets: ['latin'] })
+import './globals.css'
+import React, {useState} from 'react'
+import { useRouter } from 'next/navigation';
+import type { Metadata } from 'next'
+
+// Import Components 
+import SidebarButton from './components/sidebar/SidebarButton';
+import SidebarButtonDropdown from './components/sidebar/SidebarButtonDropdown';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -14,9 +19,45 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+
+  // Sidebar Btn Dropdown  
+  const [overviewDropDown, setOverviewDropDown] = useState(false);
+  const [agileDropDown,    setAgileDropDown]    = useState(false);
+  const [pipelineDropDown, setPipelineDropDown] = useState(false);
+  const [otherDropDown,    setOtherDropDown]    = useState(false);
+
+  const dropDownNames = ["Overview", "Agile"]; // TODO: add other dropdown btns 
+  const dropDownSetters = [setOverviewDropDown, setAgileDropDown, setPipelineDropDown, setOtherDropDown]; 
+
+  const { push } = useRouter();
+
+  // Setup Homebtn
+  const handleTitleBtnReroute = (e : any) => {
+    e.preventDefault(); 
+    push('/');
+  } 
+
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body>
+        <div id="topbar-container">
+                <div id="title-container">
+                    <button id = "title-btn" onClick={handleTitleBtnReroute}><b>AutoDevOps</b></button> 
+                </div>
+        </div>
+      
+        <div id='sidebar-container'>
+          <SidebarButton name="Overview" dropDownState = {overviewDropDown} dropDownNames={dropDownNames} dropDownSetters={dropDownSetters} />
+          <SidebarButtonDropdown name="Overview" dropdownVisibile={overviewDropDown} />
+
+          <SidebarButton name="Agile" dropDownState = {agileDropDown} dropDownNames={dropDownNames} dropDownSetters={dropDownSetters} />
+          <SidebarButtonDropdown name="Agile" dropdownVisibile={agileDropDown} />
+        </div>
+
+        <div className='content-container'>
+          {children} 
+        </div>
+      </body>
     </html>
   )
 }

@@ -3,9 +3,7 @@ import styles from './page.module.css'
 export default function Home() {
   return (
     <div>
-      <h1>Hello home</h1>
+      <h1>Stats Page</h1>
     </div>
   )
 }
-
-
