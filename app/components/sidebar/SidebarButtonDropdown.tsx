@@ -11,6 +11,10 @@ const allTabs = [
         "items": ["Project Management", "Boards", "Backlogs", "Stories"]
     },
     {
+        "name": "Automation", 
+        "items": ["Requirements Generation", "User Story Conversion"]
+    },
+    {
         "name": "Pipelines", 
         "items": ["TODO"]
     }, 
@@ -20,16 +24,20 @@ const allTabs = [
     }, 
 ];
 
-export default function SidebarButtonDropdown({name, dropdownVisibile} : {
+export default function SidebarButtonDropdown({name, dropdownVisibile, dropdownIcons} : {
     name: string,
-    dropdownVisibile: boolean
+    dropdownVisibile: boolean,
+    dropdownIcons: any 
 }) {
 
     return (
         <div className="sidebar-dropdown-container">
         {dropdownVisibile && (
-            allTabs.find((tab : any)=>tab.name===name).items.map((item) => (
-                <SidebarItem key={name + item} itemName={item} itemRoot={name}/>
+            allTabs.find((tab : any)=>tab.name===name).items.map((item, index) => (
+                <SidebarItem key={name + item} 
+                                itemName={item} 
+                                itemRoot={name}
+                                itemIcon={dropdownIcons[index]}/>
             ))
         )} 
         </div>          

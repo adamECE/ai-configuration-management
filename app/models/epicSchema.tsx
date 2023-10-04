@@ -37,6 +37,16 @@ const workItemScehma = new Schema({
         type: String,
         required: [true, 'State should be required, should default to new'],
         trim: true
+    },
+
+    children: {
+        type: Array<Number>,
+        required: [false, 'no children need to be initialized']
+    },
+
+    linked: {
+        type: Array<Number>,
+        required: [false, 'no links need to be initialized']
     }
 
     // acceptanceCriteria: {

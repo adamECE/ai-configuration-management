@@ -1,16 +1,15 @@
 import connectDB from "@/app/lib/mongodb";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import WorkItem from "@/app/models/epicSchema"
 import mongoose from "mongoose";
 
-export async function POST(req : any) {
-  const { name, id, description, storyPoints, workItemStatus } = await req.json();
+export async function POST(req : NextRequest) {
+  const { name, id, description, storyPoints, workItemStatus, children, linked} 
+        = await req.json();
 
   try {
     await connectDB();
-    await WorkItem.create({ name, id, description, storyPoints, workItemStatus });
-
-    
+    await WorkItem.create({ name, id, description, storyPoints, workItemStatus, children, linked });
 
     return NextResponse.json({
       msg: ["Message sent successfully"],

@@ -7,6 +7,8 @@ import DirItemBtn from '@/app/components/projectManagement/DirItemBtn';
 export default function ScriptPath() {
 
   const [repoItems, setRepoItems] = useState([]);
+  const [isRepoItem, setIsRepoItem] = useState(false); 
+  const [fileContent, setFileContent] = useState('');
   const pathname = usePathname(); 
   const pathnameParts = pathname.split('/');
   const projectName = pathnameParts.pop();
@@ -14,49 +16,52 @@ export default function ScriptPath() {
   // for some reason projectName can't be assigned 
   let currentPaths : any = [projectName]; 
 
+  // code styles 
+  const codeStyles = {
+    border:'solid 2px white',
+    width: '100%', 
+    margin: '5px',
+    padding: '5px',
+    backgroundColor: 'black',
+    color: 'white',
+    left: '20px',
+  }
+
+  const dirContainerStyles = {
+    margin: 'auto',
+    left: '20px',
+    padding: 'none',
+    width: '95%'
+  } 
+
   useEffect(() => {
     fetch(githubPath)
       .then((response) => response.json())
-      .then((result) => setRepoItems(result))
+      .then((result : any) => { 
+        console.log(result); 
+        if (Array.isArray(result)) {
+          setRepoItems(result); 
+          setIsRepoItem(true);
+        } else { 
+          setFileContent(atob(result.content));
+          setIsRepoItem(false); 
+          console.log('type is object')
+        }
+      })
       .catch((error) => console.error('Error:', error));
   }, [githubPath]);
 
   return (
     <div>
-      <h1>Hello PM</h1>
-      <div className="dir-items-container">
-          {currentPaths.map((item : any, index : number) => (
-              <DirItemBtn key={index} name={item} 
-                githubPath={githubPath} setGithubPath={setGithubPath} 
-                currentPaths={currentPaths}/>
-              )
-          )}
-          {repoItems.map((item : any, index : number) => (
+      <div style={dirContainerStyles}>
+          {isRepoItem && repoItems.map((item : any, index : number) => (
               <DirItemBtn key={index} name={item.name} 
                 githubPath={githubPath} setGithubPath={setGithubPath} 
                 currentPaths={currentPaths}/>
               )
           )}
+          {!isRepoItem && <pre style={codeStyles}>{fileContent}</pre>}
       </div>
     </div>
   )
 }
-
-/*
-  const [myText, setMyText] = useState("");
-
-  useEffect(() => {
-    // Replace with the URL of the API you want to call
-    fetch('https://api.github.com/repos/adamECE/exampleRepo/contents/Scripts/exampleScript.py')
-      .then((response) => response.json())
-      .then((result) => setMyText(atob(result.content)))
-      .catch((error) => console.error('Error:', error));
-  }, []);
-
-  return (
-    <div>
-      <h1>Hello home</h1>
-      <pre>{myText}</pre>
-    </div>
-  )
-*/
