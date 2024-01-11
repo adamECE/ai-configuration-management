@@ -1,27 +1,35 @@
-const { Schema } = require('mongoose');
 import mongoose from "mongoose";
+import { Schema } from 'mongoose';
 
 const workItemScehma = new Schema({
-    // Story name 
+    // item name 
     name: {
         type: String,
         required: [true, 'Name is required'],
         trim: true,
-        minLength: [2, 'Name must be larger than 2 characters'],
+        minLength: [2,  'Name must be larger than 2 characters'],
         maxLength: [50, 'Name must be less than 50 characters']
     },
 
     // work item id for identification 
     id: {
         type: Number,
-        required: [true, 'id is required'],
-        minLength: [20, 'Id must be at least 20 characters']
+        required:  [true, 'Id is required'],
+        minLength: [20,   'Id must be at least 20 characters']
     },
 
     // work item description
     description: {
         type: String,
         required: [true, 'Description, even as an empty string, is required'],
+        trim: true
+    },
+
+    // Current accepted types are: "Story" and "Feature"
+    // TODO: Make this an enum
+    type: {
+        type: String,
+        required: [true, 'Type must be Story or Feature'],
         trim: true
     },
 
@@ -32,7 +40,7 @@ const workItemScehma = new Schema({
         trim: true
     },
 
-    // State can be new, active, in review, completed, or blocked
+    // State can be New, Active, In Review, Completed, or Blocked
     workItemStatus: {
         type: String,
         required: [true, 'State should be required, should default to new'],

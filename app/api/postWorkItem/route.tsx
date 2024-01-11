@@ -4,12 +4,21 @@ import WorkItem from "@/app/models/epicSchema"
 import mongoose from "mongoose";
 
 export async function POST(req : NextRequest) {
-  const { name, id, description, storyPoints, workItemStatus, children, linked} 
+  const { name, description, storyPoints, workItemStatus, children, linked} 
         = await req.json();
 
   try {
+    // fix this later you could have multiple ID's 
+    let randomId = Math.floor((Math.random()*1000000)+1);
     await connectDB();
-    await WorkItem.create({ name, id, description, storyPoints, workItemStatus, children, linked });
+    await WorkItem.create({ name: name, 
+                            id: randomId,   
+                            description: description, 
+                            storyPoints: storyPoints, 
+                            workItemStatus: workItemStatus[0].toUpperCase() 
+                                          + workItemStatus.slice(1), 
+                            children: children,       
+                            linked: linked });
 
     return NextResponse.json({
       msg: ["Message sent successfully"],

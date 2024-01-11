@@ -10,8 +10,6 @@ export async function GET(req : any, res : NextRequest) {
 
     const allWorkItems = await WorkItem.find();
 
-    console.log(allWorkItems);
-
     return NextResponse.json({
       msg: ["Message sent successfully"],
       success: true,

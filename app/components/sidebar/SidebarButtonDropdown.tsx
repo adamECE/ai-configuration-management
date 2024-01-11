@@ -32,7 +32,7 @@ export default function SidebarButtonDropdown({name, dropdownVisibile, dropdownI
 
     return (
         <div className="sidebar-dropdown-container">
-        {dropdownVisibile && (
+        {dropdownVisibile && allTabs && (
             allTabs.find((tab : any)=>tab.name===name).items.map((item, index) => (
                 <SidebarItem key={name + item} 
                                 itemName={item} 

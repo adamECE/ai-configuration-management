@@ -1,92 +1,84 @@
 'use client'
 import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react'
+import FeatureItem from './FeatureItem'
 
+type WrapperProps = {
+  children: React.ReactNode;
+};
+
+function Wrapper(props: WrapperProps) {
+  return <div>{props.children}</div>;
+}
 
 export default function Backlogs() {
 
   const { push } = useRouter();
+  const [featureName, setFeatureName] = useState("")
+  const [showEnterFeatureName, setShowEnterFeatureName] = useState(false); 
+  const [featureItemsArray, setFeatureItemsArray] = useState<any[]>([]);      
 
-  const epicStyles = {fontSize:'20px'}; 
+  useEffect(() => {
+    async function fetchGetWorkItems() {
+      fetch("../api/getWorkItems", {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json",
+          "Access-Control-Allow-Origin": "*"
+        }
+      })
+      .then(res => res.json())
+      .then(data => {
+        const allFeatures = data.workItems.filter(
+            (item : {type : string}) => item.type === 'Feature');
+        console.log(allFeatures)
+        setFeatureItemsArray(allFeatures)
+      })
+      .catch(error => {console.error(error)})
+    }
 
-  const handleCreateNewItem = (e : React.MouseEvent<HTMLButtonElement>) => {
+    fetchGetWorkItems();
+  }, [])
+
+  const handleCreateNewFeature = (e : React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault(); 
-    push('/agile/backlogs/createWorkItem');
+    setShowEnterFeatureName(true);
+  }
+
+  const handleFeatureNameSubmit = (e : React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault(); 
+    setShowEnterFeatureName(false);
+
+    // create new feature work item 
+
+    // redirect to this feature's page
   }
 
   return (
     <div>
+      <button className="create-item-btn" onClick={handleCreateNewFeature}> Create New Feature</button>
+      {showEnterFeatureName && 
+        <div style={{margin:'1.2rem', height:'2.0rem'}}>
+          <input
+            onChange={e => setFeatureName(e.target.value)}
+            value={featureName}
+            style={{height:'30px', width: '500px', margin:'0.5rem'}}
+            placeholder="Enter Feature Name"
+          />
+          <button 
+            onChange={handleFeatureNameSubmit}
+            style={{height:'30px', margin:'0.5rem'}}
+          >
+            Create Feature
+          </button>
+        </div>
+      } 
 
-      <button className="create-item-btn" onClick={handleCreateNewItem}> Create New Item</button>
-      <div className="backlogs-container"> 
-        <button className="epic-btn" style={epicStyles}>Phase 1</button>
-        <button className="epic-btn" style={epicStyles}>Phase 2</button>
-        <button className="epic-btn" style={epicStyles}>Phase 3</button>
+      <div>
+        {featureItemsArray.map((item : any) => 
+          ( <FeatureItem key={item.id} name={item.name} /> )
+        )}
       </div>
     </div>
   )
 }
-
-
-/*
-    <button onClick={handleSubmit}>
-      Click Me POST
-    </button>
-    <button onClick={handleSubmitGET}>
-      Click Me GET 
-    </button>
-
-  const tempChildsChild = {
-    name: "childchild",
-    id: 8907,
-    description: 'this is the childs child',
-    storyPoints: 3,
-    workItemStatus: "Active"
-  }
-
-  const tempChild = {
-    name: "child",
-    id: 56748723,
-    description: 'this is the child',
-    storyPoints: 3,
-    workItemStatus: "Active",
-    children: [tempChildsChild.id]
-  }
-
-  const tempItem = {
-    name: "parent",
-    id: 1125566,
-    description: 'this is the parent',
-    storyPoints: 3,
-    workItemStatus: "Active",
-    children:  [tempChild.id],
-  }
-
-  const handleSubmit = async (e : any) => {
-    e.preventDefault();
-    const res = await fetch("../api/postWorkItem", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json"
-      },
-      body: JSON.stringify(tempItem),
-    });
-
-    const { msg, success } = await res.json();
-    console.log(msg);
-    console.log(success)
-  };
-
-  const handleSubmitGET = async (e : any) => {
-    await fetch("../api/getWorkItems", {
-      method: "GET",
-      headers: {
-        "Content-type": "application/json",
-        "Access-Control-Allow-Origin": "*"
-      }
-    })
-    .then(res => res.json())
-    .then(data => {console.log(data)})
-    .catch(error => {console.error(error)})
-  }
-
-*/

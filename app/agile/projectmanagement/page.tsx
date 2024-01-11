@@ -14,7 +14,8 @@ export default function ProjectManagement() {
       .catch((error) => console.error('Error:', error));
   }, []);
 
-  repos.map((repo : any, index) => (console.log(repo.name)))
+  // For debugging 
+  // repos.map((repo : any, index) => (console.log(repo.name)))
 
   return (
     <div className='test-me'>

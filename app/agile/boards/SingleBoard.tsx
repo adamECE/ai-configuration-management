@@ -1,4 +1,5 @@
 
+import { json } from "node:stream/consumers";
 import BoardItem from "./BoardItem"
 
 const names = ['New', 'Active', 'In Review', 'Closed', 'Blocked']; 
@@ -17,6 +18,8 @@ export default function SingleBoard({name, allItems, setAllItems} : {
         let pastBoardName = e.dataTransfer.getData("boardName") as string;
         let droppedItem = JSON.parse(droppedItemStr); 
         let tempItems = items.slice(); 
+
+        console.log(droppedItem)
         
         // reset item list 
         tempItems.push(droppedItem); 
@@ -24,12 +27,25 @@ export default function SingleBoard({name, allItems, setAllItems} : {
         
         // remove item from original list
         const pastBoardIndex = names.indexOf(pastBoardName);
-        console.log(droppedItem)
         const pastBoardItems = allItems[pastBoardIndex].slice(); 
         setAllItems[pastBoardIndex](pastBoardItems.filter(
             (item:any) => item.id !== droppedItem.id)
         ) 
-        // TODO: Update items state in db 
+
+        // Update items state in db 
+        fetch("../api/updateWorkItem", {
+            method: "POST",
+            headers: {
+              "Content-type": "application/json",
+              "Access-Control-Allow-Origin": "*"
+            },
+            body: JSON.stringify({
+                _id: droppedItem._id,
+                workItemStatus: name
+            })
+          })
+          .then( res => res.json() )
+          .then( data => console.log(data))
     }
     
     const handleDragOver = (e : React.DragEvent) => {

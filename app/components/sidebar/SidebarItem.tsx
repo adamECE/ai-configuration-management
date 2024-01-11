@@ -37,7 +37,7 @@ export default function SidebarItem ({itemName, itemRoot, itemIcon} : {
 
     const handleSidebarItem = (e : any) => {
         e.preventDefault();
-        console.log("/" + itemRoot.toLowerCase() + "/" + itemName.toLowerCase().trim().replace(/\s/g, ''));
+        // console.log("/" + itemRoot.toLowerCase() + "/" + itemName.toLowerCase().trim().replace(/\s/g, ''));
         push("/" + itemRoot.toLowerCase() + "/" + itemName.toLowerCase().trim().replace(/\s/g, ''))
     }  
 
